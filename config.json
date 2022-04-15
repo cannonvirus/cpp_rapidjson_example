@@ -1,7 +1,7 @@
 {
     "video_path": "/data/EdgeFarm_pig/sungoh/pig_rec/hallway/2022-01-18/sungohfarm.iptime.org_01_20220118142918500.mp4",
-    "mode_switch": true,
-    "k1": -0.5,
-    "k2": 0.8,
+    "mode_switch": 1,
+    "k1": -0.000005,
+    "k2": 0.000008,
     "epoch": 1000
 }
