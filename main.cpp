@@ -110,11 +110,33 @@ void dict_value_change(string key, variant<string, int, float> value, map<string
 {
     visit(overloaded{[&notebook, &key](int arg)
                      { notebook[key].emplace<int>(arg); },
-                     [&notebook, &key](double arg)
+                     [&notebook, &key](float arg)
                      { notebook[key].emplace<float>(arg); },
                      [&notebook, &key](const std::string &arg)
                      { notebook[key].emplace<string>(arg); }},
           value);
+}
+
+void dict_insert(string key, variant<string, int, float> value, map<string, variant<string, int, float>> &notebook)
+{
+    visit(overloaded{[&notebook, &key](int arg)
+                     {
+                         notebook.insert({key, arg});
+                     },
+                     [&notebook, &key](float arg)
+                     {
+                         notebook.insert({key, arg});
+                     },
+                     [&notebook, &key](const std::string &arg)
+                     {
+                         notebook.insert({key, arg});
+                     }},
+          value);
+}
+
+void dict_key_remove(string key, map<string, variant<string, int, float>> &notebook)
+{
+    notebook.erase(key);
 }
 
 int main()
@@ -131,6 +153,16 @@ int main()
     // dict value change
     dict_value_change("video_path", "OOP", param_dict);
     dict_value_change("epoch", 3500, param_dict);
+
+    // dict value insert
+    dict_insert("image_count", 1000, param_dict);
+    dict_insert("image_path", "/data/img", param_dict);
+    dict_insert("image_value", 50.0f, param_dict);
+
+    // dict key remove
+    dict_key_remove("image_path", param_dict);
+    dict_key_remove("image_count", param_dict);
+    dict_key_remove("image_value", param_dict);
 
     // json writer
     json_writer("../out.json", param_dict);
