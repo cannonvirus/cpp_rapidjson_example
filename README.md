@@ -6,7 +6,7 @@
   </a>
 </p>
 
-> 이 프로젝트는 c++에서 dictionary를 파이썬처럼 value값의 type에 상관없이 사용하기 위해 구현한 코드입니다. 
+> 이 프로젝트는 c++에서 json 정보를 파이썬 dictionary처럼 value type에 상관없이 적재 및 사용하기 위해 구현한 코드입니다. 
 
 ## requirement
 
