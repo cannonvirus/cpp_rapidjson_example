@@ -57,16 +57,16 @@ void json_reader(string json_path, map<string, variant<string, int, float>> &not
         }
     }
 
-    cout << "==========================================================" << endl;
-    for (const auto &[k, v] : notebook)
-    {
-        cout << k << " : ";
-        visit([](const auto &x)
-              { cout << x; },
-              v);
-        cout << '\n';
-    }
-    cout << "==========================================================" << endl;
+    // cout << "==========================================================" << endl;
+    // for (const auto &[k, v] : notebook)
+    // {
+    //     cout << k << " : ";
+    //     visit([](const auto &x)
+    //           { cout << x; },
+    //           v);
+    //     cout << '\n';
+    // }
+    // cout << "==========================================================" << endl;
 }
 
 void json_writer(string json_path, map<string, variant<string, int, float>> &notebook)
@@ -139,6 +139,37 @@ void dict_key_remove(string key, map<string, variant<string, int, float>> &noteb
     notebook.erase(key);
 }
 
+void json_reader_array(string json_path, map<string, map<string, float>> &notebook)
+{
+    std::ifstream ifs{json_path};
+    if (!ifs.is_open())
+    {
+        std::cerr << "Could not open file for reading!\n";
+    }
+    IStreamWrapper isw{ifs};
+
+    Document doc{};
+    doc.ParseStream(isw);
+
+    Value::MemberIterator M;
+
+    for (M = doc.MemberBegin(); M != doc.MemberEnd(); M++)
+    {
+        // key = M->name.GetString();
+        string key_str = M->name.GetString();
+
+        if (M->value.IsArray()) {
+            array<string, 4> box = {"xmin", "ymin", "width", "height"};
+            int idx = 0;
+            for (auto& v : M->value.GetArray()) {
+                notebook[key_str][box[idx]] = v.GetFloat();
+                idx++;
+            }
+        }
+    }
+
+}
+
 int main()
 {
     // 주의사항
@@ -166,4 +197,18 @@ int main()
 
     // json writer
     json_writer("../out.json", param_dict);
+
+
+    // NOTE 1.1 ----------------
+    map<string, map<string, float>> area_box_dict;
+    json_reader_array("/works/cpp_rapidjson_example/room0.json", area_box_dict);
+
+    for (auto &kv : area_box_dict){
+		cout << kv.first << endl;
+        cout << "xmin   : " << area_box_dict[kv.first]["xmin"] << endl;
+        cout << "ymin   : " << area_box_dict[kv.first]["ymin"] << endl;
+        cout << "width  : " << area_box_dict[kv.first]["width"] << endl;
+        cout << "height : " << area_box_dict[kv.first]["height"] << endl;
+	}
+
 }
