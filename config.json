@@ -1,7 +1,1 @@
-{
-    "video_path": "/data/EdgeFarm_pig/sungoh/pig_rec/hallway/2022-01-18/sungohfarm.iptime.org_01_20220118142918500.mp4",
-    "mode_switch": 1,
-    "k1": -0.000005,
-    "k2": 0.000008,
-    "epoch": 1000
-}
+{"age":105,"auto_stop_second":60,"cam_id":-1,"device_id":51,"direction":0,"end_interval":0,"hallway_width_cm":100.0,"hallway_width_pixel":95.0,"limit_max_weight":30.0,"limit_min_weight":20.0,"linegap":0.02,"linegap_position":0.5,"reboot_time":"00:00:00","ship_direction":"l","upload_time":"01:00:00","vpi_k1":-0.00016,"vpi_k2":0.0,"weight_bias":0.0,"x_focus":0,"x_pad":0.0,"x_rotate":0.0,"x_scale":1.0,"y_focus":0,"y_pad":0.0,"y_rotate":0.0,"y_scale":1.0,"zx_perspect":0.0,"zy_perspect":0.003}

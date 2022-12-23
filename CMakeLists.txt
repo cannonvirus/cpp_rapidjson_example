@@ -18,7 +18,10 @@ endif()
 find_package(RapidJSON)
 message(STATUS "include path: ${RapidJSON_INCLUDE_DIRS}")
 
-add_executable(rapidjson_test main.cpp )
+include_directories(${PROJECT_SOURCE_DIR}/include)
+file(GLOB SOURCE_FILES src/*.cpp)
+
+add_executable(rapidjson_test main.cpp ${SOURCE_FILES})
 
 target_link_libraries (
         ${CMAKE_PROJECT_NAME}
