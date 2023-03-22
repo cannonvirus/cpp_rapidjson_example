@@ -10,7 +10,9 @@
 #include <cstdlib>
 #include <variant>
 #include <map>
+#include <string>
 #include <vector>
+#include <sstream>
 
 // json 불러오기, 정보는 map 형태로 저장됨
 void json_reader(std::string json_path, std::map<std::string, std::variant<std::string, int, float>> &notebook, bool print_option);
@@ -25,9 +27,11 @@ void dict_insert(std::string key, std::variant<std::string, int, float> value, s
 
 void dict_key_remove(std::string key, std::map<std::string, std::variant<std::string, int, float>> &notebook);
 
-void json_check_Count(const std::string& json_path, std::map<std::string, std::variant<std::string, int, float>> &json_dict);
+void json_reader_array(std::string json_path, std::map<std::string, std::map<std::string, float>> &notebook);
 
+void json_grow(std::string json_path, std::map<int, std::map<std::string, std::map<std::string, float>>> &notebook);
 
+void export_foodarea(std::string json_path, std::map<std::string, std::map<std::string, float>> &area_box_dict);
 // ? ==================================================================================
 // ? bool은 적용이 안됨. 0,1 Int값으로 받을 것
 // ? float라서 소수점 6자리까지만 적용됨

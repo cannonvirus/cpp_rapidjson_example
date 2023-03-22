@@ -1,0 +1,49 @@
+{
+  "rtsp": "rtsp://admin:intflow3121@goodfarm0813.iptime.org:11154/Streaming/Channels/101/",
+  "info": [
+      {
+          "id": 473,
+          "name": "[테스트] 55 장치 카메라 1.1",
+          "weight_bias": 0.0,
+          "age": 65,
+          "detection_area": "10,10,300,340",
+          "food_area": "10,10,150,170",
+          "grow_width_cm": 15.0,
+          "grow_width_pixel": 20.0,
+          "vpi_k1": -0.0002,
+          "vpi_k2": 0.0,
+          "x_focus": 0,
+          "y_focus": 0,
+          "x_pad": -5.0,
+          "y_pad": 0.0,
+          "x_rotate": 0.0,
+          "y_rotate": 0.04,
+          "x_scale": 1.0,
+          "y_scale": 1.0,
+          "zx_perspect": 0.0,
+          "zy_perspect": 0.002
+      },
+      {
+          "id": 477,
+          "name": "[테스트] 55 장치 카메라 5.1",
+          "weight_bias": 0.0,
+          "age": 65,
+          "detection_area": "300,10,300,340",
+          "food_area": "300,300,150,170",
+          "grow_width_cm": 15.0,
+          "grow_width_pixel": 15.0,
+          "vpi_k1": -0.00018,
+          "vpi_k2": 0.0,
+          "x_focus": 0,
+          "y_focus": 0,
+          "x_pad": -1.0,
+          "y_pad": 0.0,
+          "x_rotate": 0.0,
+          "y_rotate": 0.0,
+          "x_scale": 1.0,
+          "y_scale": 1.0,
+          "zx_perspect": 0.0,
+          "zy_perspect": 0.002
+      }
+  ]
+}

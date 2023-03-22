@@ -1,22 +1,31 @@
 #include <iostream>
+#include <sstream>
 
 #include "my_json.h"
 
 using namespace std;
 
-int main()
+int main() 
 {
-    // 주의사항
-    // bool은 적용이 안됨. 0,1 Int값으로 받을 것
-    // float라서 소수점 6자리까지만 적용됨
-    map<string, variant<string, int, float>> param_dict;
+    string json_path = "/works/cpp_rapidjson_example/example.json";
+    map<string, map<string, float>> area_box_dict;
 
-    // json reader
-    string json_path = "/works/cpp_rapidjson_example/config.json";
-    json_reader(json_path, param_dict, false);
+    export_foodarea(json_path, area_box_dict);
 
-    json_check_Count(json_path, param_dict);
+    // Print the resulting map
+    for (auto const& [key, val] : area_box_dict) {
+        std::cout << key << ": {";
+        for (auto const& [k, v] : val) {
+            std::cout << k << ": " << v << ", ";
+        }
+        std::cout << "}" << std::endl;
+    }
 
-    float px = get<float>(param_dict["hallway_width_pixel"]);
-    cout << px << endl;
+    for (auto &kv : area_box_dict){
+		cout << kv.first << endl;
+		cout << area_box_dict[kv.first]["xmin"] << endl;
+		cout << area_box_dict[kv.first]["ymin"] << endl;
+		cout << area_box_dict[kv.first]["width"] << endl;
+		cout << area_box_dict[kv.first]["height"] << endl;
+	}
 }

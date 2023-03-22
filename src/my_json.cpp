@@ -131,59 +131,103 @@ void dict_key_remove(string key, map<string, variant<string, int, float>> &noteb
     notebook.erase(key);
 }
 
-void json_check_Count(const string& json_path, map<string, variant<string, int, float>> &json_dict) {
-    vector<string> edgefarm_key_list = {"device_id", 
-							"end_interval", 
-							"hallway_width_cm", 
-							"hallway_width_pixel", 
-							"limit_min_weight", 
-							"limit_max_weight", 
-							"weight_bias", 
-							"age", 
-							"linegap", "linegap_position", 
-							"vpi_k1", "vpi_k2", 
-							"x_scale", "y_scale", 
-							"x_rotate", "y_rotate", 
-							"zx_perspect", "zy_perspect", 
-							"x_pad", "y_pad", 
-							"x_focus", "y_focus",
-                            "cam_id", "ship_direction",
-                            "upload_time", "reboot_time",
-                            "direction"
-							};
+void json_reader_array(string json_path, map<string, map<string, float>> &notebook)
+{
+    std::ifstream ifs{json_path};
+    if (!ifs.is_open())
+    {
+        std::cerr << "Could not open file for reading!\n";
+    }
+    IStreamWrapper isw{ifs};
 
-    for (const auto& edgefarm_key : edgefarm_key_list) {
-		bool bKeyInsert = false;
-		for (const auto& [k, v] : json_dict) {
-			if (edgefarm_key == k) {
-				bKeyInsert = true;
-				break;
-			}
-		}
-		if (!bKeyInsert) {
-			cout << edgefarm_key << " : [Not Find]" << endl;
-            if (edgefarm_key == "linegap") dict_insert(edgefarm_key, 0.02f, json_dict);
-            else if (edgefarm_key == "linegap_position") dict_insert(edgefarm_key, 0.5f, json_dict);
-            else if (edgefarm_key == "age") dict_insert(edgefarm_key, 50, json_dict);
-            else if (edgefarm_key == "weight_bias") dict_insert(edgefarm_key, 0.0f, json_dict);
-            else if (edgefarm_key == "ship_direction") dict_insert(edgefarm_key, "r", json_dict);
-            else if (edgefarm_key == "hallway_width_cm") dict_insert(edgefarm_key, 10.0f, json_dict);
-            else if (edgefarm_key == "hallway_width_pixel") dict_insert(edgefarm_key, 10.0f, json_dict); // 앞으로 버전은 무조건 float
-            // dev_v1.1.0.0 부터 추가됨
-            else if (edgefarm_key == "cam_id") dict_insert(edgefarm_key, -1, json_dict);
-            else if (edgefarm_key == "upload_time") dict_insert(edgefarm_key, "01:00:00", json_dict);
-            else if (edgefarm_key == "reboot_time") dict_insert(edgefarm_key, "00:00:00", json_dict);
-            else if (edgefarm_key == "direction") dict_insert(edgefarm_key, 0, json_dict);
-			dict_insert(edgefarm_key, 0, json_dict);
-		}
-	}
+    Document doc{};
+    doc.ParseStream(isw);
 
-    // hallway_width_pixel (int -> float)
+    Value::MemberIterator M;
 
-    if (holds_alternative<int>(json_dict["hallway_width_pixel"])) {
-        int tmp_px =  get<int>(json_dict["hallway_width_pixel"]);
-        dict_value_change("hallway_width_pixel", static_cast<float>(tmp_px), json_dict);
+    for (M = doc.MemberBegin(); M != doc.MemberEnd(); M++)
+    {
+        // key = M->name.GetString();
+        string key_str = M->name.GetString();
+
+        if (M->value.IsArray()) {
+            array<string, 4> box = {"xmin", "ymin", "width", "height"};
+            int idx = 0;
+            for (auto& v : M->value.GetArray()) {
+                notebook[key_str][box[idx]] = v.GetFloat();
+                idx++;
+            }
+        }
+    }
+}
+
+void json_grow(string json_path, map<int, map<string, map<string, float>>> &notebook) {
+
+    std::ifstream ifs{json_path};
+    if (!ifs.is_open())
+    {
+        std::cerr << "Could not open file for reading!\n";
+    }
+    IStreamWrapper isw{ifs};
+
+    Document doc{};
+    doc.ParseStream(isw);
+
+    const Value& info = doc["info"];
+
+    for (SizeType i = 0; i < info.Size(); i++) {
+        int id = info[i]["id"].GetInt();
+        const char* detection_area = info[i]["detection_area"].GetString();
+        const char* food_area = info[i]["food_area"].GetString();
+        cout << id << endl;
+        cout << detection_area << endl;
+        cout << food_area << endl;
+        
+    }
+}
+
+void export_foodarea(string json_path, map<string, map<string, float>> &area_box_dict) {
+
+    ifstream ifs{json_path};
+    if (!ifs.is_open())
+    {
+        cerr << "Could not open file for reading!\n";
+    }
+    IStreamWrapper isw{ifs};
+
+    Document doc{};
+    doc.ParseStream(isw);
+
+    const Value& info = doc["info"];
+
+    vector<float> values;
+    
+    for (SizeType i = 0; i < info.Size(); i++) {
+        // int id = info[i]["id"].GetInt();
+        const char* food_area = info[i]["food_area"].GetString();
+        std::string str = food_area;
+        // cout << id << " " << str << endl;
+
+        stringstream ss(str);
+        string token;
+
+        while (getline(ss, token, ',')) {
+            values.push_back(stof(token));
+        }
+
+        // map<int, map<string, float>> area_box_dict;
+        // {0 : {xmin : 0.0, ymin : 1.0 ...}}
+
+        for (int i = 0; i < static_cast<int>(values.size()); i += 4) {
+            string obj_index = "EAT" + to_string(i / 4);
+            std::map<std::string, float> obj_dict;
+            obj_dict["xmin"] = values[i];
+            obj_dict["ymin"] = values[i+1];
+            obj_dict["width"] = values[i+2];
+            obj_dict["height"] = values[i+3];
+            area_box_dict[obj_index] = obj_dict;
+        }
+        
     }
 
-	json_writer(json_path, json_dict);
 }
